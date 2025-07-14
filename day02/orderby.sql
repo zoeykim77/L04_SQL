@@ -17,10 +17,12 @@ ORDER BY c.`Population` DESC, c.`CountryCode`;
 DESC city;
 
 -- NULL의 케이스 확인
+-- NULL은 가장 작은 값으로 해석이 된다.
 SELECT c.Name, c.`IndepYear`
 FROM country AS c
-ORDER BY c.`IndepYear` IS NULL DESC,`IndepYear`;
+ORDER BY c.`IndepYear` IS NULL DESC,`IndepYear` DESC;
 
+-- 상위 N개의 행만 보기
 SELECT *
 FROM city
 LIMIT 5
