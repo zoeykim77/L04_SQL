@@ -1,6 +1,12 @@
 -- Having
 -- 집계된 이후, 추가 필터링
--- 작성 순서 : SELECT -> FROM -> WHERE -> GROUP BY -> HAVING
+/* 
+[작성 순서]
+SELECT -> FROM -> WHERE -> GROUP BY -> HAVING
+
+[생각 순서]
+FROM -> WHERE -> GROUP BY -> HAVING -> SELECT
+*/ 
 
 USE world;
 
