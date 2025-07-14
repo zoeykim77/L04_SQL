@@ -117,3 +117,55 @@ WHERE c.Population >= 10000000;
 -- SELECT c.Name AS 이름, CountryCode AS 국가코드, Population AS 인구수
 -- FROM city AS c
 -- WHERE 인구수 >= 10000000; -- 에러 발생
+
+-- ============ WHERE ============
+
+USE world;
+
+-- 조건 필터링
+-- (1) 비교 연산
+-- 파이썬의 비교연산과 유사하나, 일부 다름
+-- 일치연산 같다(=), 같지 않다 (!=, <>)
+SELECT *
+FROM city
+WHERE city.CountryCode = 'KOR';
+
+-- 논리 연산
+SELECT CountryCode AS 국가명, Name AS 도시이름, Population AS 인구수
+FROM city
+WHERE Population > 1000000
+        AND Population < 10000000;
+
+-- 범위 연산
+SELECT CountryCode AS 국가명, Name AS 도시이름, Population AS 인구수
+FROM city
+WHERE Population BETWEEN 100000 AND 1000000;
+
+-- 포함 연산
+SELECT CountryCode AS 국가명, Name AS 도시이름, Population AS 인구수
+FROM city
+WHERE CountryCode IN ('KOR','JPN','CHN');
+
+-- 사실상 동일한 결과 반환
+SELECT CountryCode AS 국가명, Name AS 도시이름, Population AS 인구수
+FROM city
+WHERE CountryCode = 'KOR'
+    OR CountryCode = 'JPN'
+    OR CountryCode = 'CHN';
+
+DESC city; -- NULL 이 없기 때문에 country 테이블 사용하여, 복습
+DESC country;
+
+-- NULL 여부 체크
+SELECT *
+FROM country
+WHERE IndepYear IS NOT NULL
+    AND Continent = 'Asia'
+    AND IndepYear > 1900;
+
+-- 패턴매칭 (LIKE)
+SELECT *
+FROM country AS c
+WHERE c.IndepYear IS NOT NULL
+    AND c.Name LIKE '%stan'
+    AND c.IndepYear > 1990;
