@@ -1,64 +1,38 @@
--- 실전! SQL 실습 : WHERE 연습
+-- Active: 1751779934239@@127.0.0.1@3306@world
+-- 실습 2: GROUP BY
 USE world;
 SHOW TABLES;
-DESC city;
-
--- [1] 인구가 800만 이상인 도시의 Name, Population을 조회하시오
-SELECT c.Name, c.Population
-FROM city AS c
-WHERE c.`Population` >= 8000000;
-
-
--- [2] 한국(KOR)에 있는 도시의 Name, CountryCode를 조회하시오
-SELECT c.`Name`, c.`CountryCode`
-FROM city AS c
-WHERE c.`CountryCode` = 'KOR'; 
-
-SELECT COUNT(*)
-FROM city AS c
-WHERE c.`CountryCode` = 'KOR'; -- 한국인 70개의 행만을 조회
-
--- [3] 이름이 'San'으로 시작하는 도시의 Name을 조회하시오
-SELECT c.`Name`
-FROM city AS c
-WHERE c.`Name` LIKE 'San%';
-
--- 중첩된 값을 제외하고, San 으로 시작하는 케이스만을 조회
-SELECT DISTINCT c.Name
-FROM city AS c
-WHERE c.`Name` LIKE 'San__'; 
--- %(0개이상 글자)와 _(1글자)와의 차이점
-
--- [4] 인구가 100만에서 200만 사이인 한국 도시의 Name을 조회하시오
-SELECT c.`Name`
-FROM city AS c
-WHERE c.`CountryCode` = 'KOR'
-    AND c.`Population` BETWEEN 1000000 AND 2000000;
-
--- [5] 인구가 500만 이상인 한국, 일본, 중국의 도시의 Name, CountryCode, Population 을 조회하시오
-
-SELECT DISTINCT c.`CountryCode`
-FROM city AS c;
-
-SELECT c.`Name`, c.`CountryCode`, c.`Population`
-FROM city AS c
-WHERE c.`CountryCode` IN ('KOR','JPN','CHN')
-    AND c.`Population` >= 5000000;
-
--- [6] 오세아니아 대륙에서 예상 수명의 데이터가 없는 나라의 Name, LifeExpectancy, Continent를 조회하시오.
-SHOW TABLES;
-
 DESC country;
 
-SELECT DISTINCT Continent
-FROM country;
+-- [1] 대륙별 총 인구수를 구하시오.
+SELECT c.`Continent` AS 대륙명, SUM(c.`Population`) AS 총인구수
+FROM country AS c
+GROUP BY c.`Continent`;
+-- 어디에서 가져올 것? country
 
-SELECT con.`Name`, con.`LifeExpectancy`, con.`Continent`
-FROM country as con
-WHERE con.`Continent` = 'Oceania'
-    AND con.`LifeExpectancy` IS NULL;
 
-SELECT *
-FROM country as con
-WHERE con.`Continent` = 'Oceania'
-    AND con.`LifeExpectancy` IS NULL;
+-- [2] Region별로 GNP가 가장 높은 나라를 찾으시오
+SELECT c.`Region` AS 지역명, MAX(c.GNP) AS 최대GNP
+FROM country AS c
+GROUP BY c.`Region`;
+
+
+-- [3] 대륙별 평균 GNP와 평균 인구를 구하시오
+SELECT c.`Continent` AS 대륙명, 
+        AVG(c.`GNP`) AS 평균GNP, 
+        AVG(c.`Population`) AS 평균인구
+FROM country AS c
+GROUP BY c.`Continent`;
+
+-- [4] 인구가 50만에서 100만 사이인 도시들에 대해, 
+--     District별 도시 수를 구하시오
+SELECT c.`District` AS 지역명, COUNT(*) AS 도시수
+FROM city AS c
+WHERE c.`Population` BETWEEN 500000 AND 1000000
+GROUP BY c.`District`;
+
+-- [5] 아시아 대륙 국가들의 Region별 총 GNP를 구하세요
+SELECT c.`Region` AS 지역명, SUM(c.GNP) AS 총GNP
+FROM country AS c
+WHERE c.`Continent` = 'Asia'
+GROUP BY c.`Region`;
