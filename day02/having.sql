@@ -9,7 +9,7 @@ SELECT co.`Continent`, COUNT(*) AS country_cnt
 FROM country as co
 GROUP BY co.`Continent`
 HAVING country_cnt > 20;
--- HAVING coCOUNT(*) > 20; -- 동일한 결과
+-- HAVING COUNT(*) > 20; -- 동일한 결과
 
 -- Region 별 평균 인구가 10000000이 넘는 지역, 평균 인구 조회
 SELECT co.`Region`, AVG(co.`Population`) as avg_pop
