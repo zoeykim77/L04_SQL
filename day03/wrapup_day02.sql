@@ -73,3 +73,12 @@ FROM
 INNER JOIN
     country AS co
 ON ct.`CountryCode` = co.`Code`;
+
+-- LEFT JOIN : 왼쪽 테이블을 기준으로 합치기
+SELECT co.`Name` AS 국가명,
+        ct.`Name` AS 수도명
+FROM country AS co
+LEFT JOIN
+    city AS ct
+ON co.`Capital` = ct.ID
+WHERE co.`Name` LIKE 'South%';
