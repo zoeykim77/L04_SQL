@@ -51,3 +51,24 @@ SELECT cl.`CountryCode`
 FROM countrylanguage AS cl
 WHERE cl.`Language` = 'English'
 AND cl.`IsOfficial` = 'T';
+
+-- 인구 500만 이상인 도시가 있는 국가 찾기 
+-- 사용 테이블 : country
+-- 조건 : 인구 500만 이상 도시 -> city
+SELECT co.`Code`, co.`Name`
+FROM country AS co
+WHERE co.`Code` IN (
+    SELECT ct.`CountryCode`
+    FROM city AS ct
+    WHERE ct.`Population` >= 5000000
+);
+
+-- 다중 컬럼 서브쿼리
+
+-- 각 나라에서 가장 인구가 많은 도시의 정보를 조회하는 경우
+SELECT ct.`Name`, ct.`CountryCode`, ct.`Population`
+FROM city AS ct
+WHERE (ct.`CountryCode`, ct.`Population`) IN (
+                                                SELECT ct.`CountryCode`, MAX(ct.`Population`)
+                                                FROM city AS ct
+                                                GROUP BY ct.`CountryCode`);
