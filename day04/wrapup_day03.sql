@@ -76,3 +76,76 @@ HAVING 국가수 >= 30; -- GROUP BY 가 있어야 HAVING이 작동
 -- HAVING co.`Population` > 10000000; -- 작동안함
 
 DESC country;
+
+-- Quiz. 인구가 많은 순서 1위부터 10위까지 대륙별로 몇 개가 있는가?
+-- 서브쿼리
+SELECT *
+FROM country
+ORDER BY `Population` DESC
+LIMIT 10;
+
+-- 인구가 많은 순서 1위부터 10위까지에 해당 "서브쿼리"
+-- 대륙별로 나라 몇 개? "메인쿼리"
+SELECT c.`Continent`, COUNT(*)
+FROM (SELECT *
+    FROM country
+    ORDER BY `Population` DESC
+    LIMIT 10) AS c -- FROM 절의 서브쿼리 (인라인 뷰)
+GROUP BY c.`Continent`;
+
+
+-- ============ 서브쿼리 ==========
+-- 메인쿼리 안에 또다른 쿼리 -> 서브쿼리
+-- 단일 행 / 비연관
+SELECT CountryCode 
+FROM city 
+WHERE Name = 'Seoul';
+
+-- 다중 행 / 비연관
+SELECT CountryCode 
+FROM countrylanguage 
+WHERE Language = 'English' AND IsOfficial = 'T';
+
+-- 비연관 서브쿼리
+SELECT Name, CountryCode
+FROM city
+WHERE CountryCode IN 
+        (SELECT Code 
+        FROM country 
+        WHERE GovernmentForm LIKE '%Republic%');
+
+-- 연관 서브쿼리
+SELECT c1.name, c1.population, c1.countrycode
+FROM city c1
+WHERE population = (
+    SELECT MAX(population)
+    FROM city c2
+    WHERE c1.countrycode = c2.countrycode
+);
+
+
+-- CTE 
+-- 1. 대륙별 최대 인구를 계산하는 CTE를 정의합니다.
+WITH ContinentMaxPopulation AS (
+    SELECT
+        Continent,
+        MAX(Population) AS max_pop
+    FROM
+        country
+    GROUP BY
+        Continent
+)
+-- 2. 메인 쿼리에서 원본 country 테이블과 CTE를 조인합니다.
+SELECT
+    c.Continent,
+    c.Name,
+    c.Population
+FROM
+    country c
+JOIN
+    ContinentMaxPopulation cmp 
+    ON c.Continent = cmp.Continent -- 대륙이 같고
+    AND 
+    c.Population = cmp.max_pop -- 해당 국가의 인구가 그 대륙의 최대 인구와 같은 경우
+ORDER BY
+    c.Continent;
