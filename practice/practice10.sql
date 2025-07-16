@@ -17,3 +17,11 @@ SELECT SUBSTRING_INDEX(c.email,'@',1) AS customer_id
 FROM customer AS c
 LIMIT 10;
 
+-- [4] 결제 금액 반올림/올림/버림 비교
+
+USE sakila;
+SELECT p.amount,
+        ROUND(p.amount) AS 반올림,
+        CEIL(p.amount) AS 올림,
+        FLOOR(p.amount) AS 버림
+FROM payment AS p;
